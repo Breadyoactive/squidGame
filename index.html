@@ -45,9 +45,10 @@
 
     function preload()
     {
-        this.load.image('sky', 'assets/deepblue.png');
-        this.load.image('platform', 'assets/platform.png');
-        this.load.image('squid', 'assets/squid.gif');
+        this.load.image('sky', 'deepblue.png');
+        this.load.image('platform', 'platform.png');
+        this.load.image('squid', 'squid.gif');
+        this.load.atlas('squid', 'SpriteSheet1.png', 'SpriteSheet11658767094.json');
     }
 
     function create()
@@ -55,7 +56,7 @@
         //Set the background origin to be at (0, 0) or top left corner of the image rather than the center of the image asset
        let background = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'sky').setOrigin(0, 0);
 
-
+        this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('squid', {prefix: 'blueJellyfish', end: 32, zeroPad: 4}), repeat: -1});
 
        //Create the platforms and the player character set to collide with the platforms
        createPlatforms(this);
