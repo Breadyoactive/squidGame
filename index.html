@@ -56,7 +56,7 @@
         //Set the background origin to be at (0, 0) or top left corner of the image rather than the center of the image asset
        let background = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'sky').setOrigin(0, 0);
 
-        this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('squid', {prefix: 'blueJellyfish', end: 32, zeroPad: 4}), repeat: -1});
+        this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('squid', {prefix: 'blueJellyfish', end: 1, zeroPad: 1}), repeat: -1});
 
        //Create the platforms and the player character set to collide with the platforms
        createPlatforms(this);
@@ -67,6 +67,9 @@
        //Set up user input
        cursors = this.input.keyboard.createCursorKeys();
        keys = this.input.keyboard.addKeys('A, D, S, W');
+
+       let squid = new SeaCreature(this, 700, 300, 'seacreatures', 'octopus');
+
 
        graphics = this.add.graphics();
     }
