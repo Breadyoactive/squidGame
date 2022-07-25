@@ -58,13 +58,14 @@
         //Set the background origin to be at (0, 0) or top left corner of the image rather than the center of the image asset
        let background = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'bg').setOrigin(0, 0);
 
-        this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
+        var anims = this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
 
        //Create the platforms and the player character set to collide with the platforms
        createPlatforms(this);
 
-       player = new Player(this, 400, 400, 'squid');
+       player = new Player(this, 400, 400, 'squid', anims);
        this.physics.add.collider(player, platforms);
+       player.play(anims);
 
        //Set up user input
        cursors = this.input.keyboard.createCursorKeys();
@@ -171,8 +172,8 @@
             super(scene, x, y, spritesheet);
             scene.add.existing(this);
             scene.physics.add.existing(this);
-            this.setScale(0.8);
-            this.play(ani);
+            this.setScale(0.02);
+            //this.play(ani);
         }
 
         addTween(scene, xDist, yDist, time)
