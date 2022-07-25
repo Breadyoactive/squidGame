@@ -71,7 +71,7 @@
        keys = this.input.keyboard.addKeys('A, D, S, W');
 
        let squid = new SeaCreature(this, 700, 300, 'seacreatures', 'squidman');
-       squid.addTween(this, squid.x, squid.y+20, 2000);
+
 
 
        graphics = this.add.graphics();
@@ -80,7 +80,6 @@
         {
             let myItem = new Item(this, Phaser.Math.Between(0, game.scale.width), Phaser.Math.Between(0, game.scale.height-80));
             this.physics.add.collider(myItem, platforms);
-            myItem.push(myItem);
         }
 
     }
