@@ -47,8 +47,7 @@
     {
         this.load.image('sky', 'deepblue.png');
         this.load.image('platform', 'platform.png');
-        this.load.image('squid', 'squid.gif');
-        this.load.atlas('squid', 'SpriteSheet1.png', 'SpriteSheet11658767094.json');
+        this.load.atlas('seacreatures', 'spritesheet (1).png', 'spritesheet (2).json');
     }
 
     function create()
@@ -56,7 +55,7 @@
         //Set the background origin to be at (0, 0) or top left corner of the image rather than the center of the image asset
        let background = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'sky').setOrigin(0, 0);
 
-        this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('squid', {prefix: 'blueJellyfish', end: 1, zeroPad: 1}), repeat: -1});
+        this.anims.create({key: 'squidani', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 5});
 
        //Create the platforms and the player character set to collide with the platforms
        createPlatforms(this);
@@ -68,8 +67,8 @@
        cursors = this.input.keyboard.createCursorKeys();
        keys = this.input.keyboard.addKeys('A, D, S, W');
 
-       let squid = new SeaCreature(this, 700, 300, 'seacreatures', 'octopus');
-
+       let squid = new SeaCreature(this, 700, 300, 'seacreatures', 'squidani');
+       squid.addTween(this, squid.x, squid.y, 8000);
 
        graphics = this.add.graphics();
     }
@@ -137,12 +136,13 @@
 
     class SeaCreature extends Phaser.Physics.Arcade.Sprite
     {
-        constructor(scene, x, y, spritesheet)
+        constructor(scene, x, y, spritesheet,animation)
         {
             super(scene, x, y, spritesheet);
             scene.add.existing(this);
             scene.physics.add.existing(this);
             this.setScale(0.8);
+            this.play(animation);
         }
 
         addTween(scene, xDist, yDist, time)
