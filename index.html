@@ -43,15 +43,17 @@
     var cursors;
     var keys;
     var space;
-
+    var ismovingx;
+    var ismovingy;
+    var isfaster;
     var graphics;
-
+    var mad;
     function preload()
     {
         this.load.image('bg', 'backround.png');
         this.load.image('platform', 'platform.png');
         this.load.image('clarinet', 'clarinet.png');
-
+        this.load.image('squidmad', 'Squidward.png');
 
         this.load.atlas('seacreatures', 'spritesheet (1).png', 'spritesheet (2).json');
     }
@@ -132,23 +134,34 @@
         if (keys.A.isDown)
         {
             player.setVelocityX(-200);
+            ismovingx = true;
         }
         else if (keys.D.isDown)
         {
             player.setVelocityX(200);
+            ismovingx = true;
+        }
+        else
+        {
+            player.setVelocityX(0)
+            ismovingx = false;
         }
         if (keys.S.isDown)
         {
             player.setVelocityY(200);
+            ismovingy = true;
         }
         else if (keys.W.isDown)
         {
             player.setVelocityY(-200);
+            ismovingy = true;
         }
         else
         {
             player.setVelocityY(0)
+            ismovingy = false;
         }
+        console.log(ismovingx||ismovingy);
 
         var secTime = this.initialTime;
         console.log(secTime);
@@ -210,6 +223,15 @@
         addTween(scene, xDist, yDist, time)
         {
             scene.tweens.add({ targets: this, x: xDist, y: yDist, duration: time, ease: 'Sine.easeInOut', repeat: -1, yoyo: true });
+        }
+    }
+
+    class Squidward {
+        constructor() {
+            mad = false;
+        }
+        madge() {
+            mad = true;
         }
     }
     function collectItem(player, item)
