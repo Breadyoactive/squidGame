@@ -48,6 +48,7 @@
     var isfaster;
     var graphics;
     var mad;
+    var myTimeout;
     function preload()
     {
         this.load.image('bg', 'backround.png');
@@ -79,7 +80,7 @@
         let myItem = new Item(this,  1920/2, 1080/2 );
         items.push(myItem);
 
-
+        squidward = new Squidward();
 
        graphics = this.add.graphics();
 
@@ -133,12 +134,13 @@
         //Handle player movements
         if (keys.A.isDown)
         {
-            player.setVelocityX(-200);
+            player.setVelocityX(-player.speed);
+            console.log(player.speed);
             ismovingx = true;
         }
         else if (keys.D.isDown)
         {
-            player.setVelocityX(200);
+            player.setVelocityX(player.speed);
             ismovingx = true;
         }
         else
@@ -148,12 +150,12 @@
         }
         if (keys.S.isDown)
         {
-            player.setVelocityY(200);
+            player.setVelocityY(player.speed);
             ismovingy = true;
         }
         else if (keys.W.isDown)
         {
-            player.setVelocityY(-200);
+            player.setVelocityY(-player.speed);
             ismovingy = true;
         }
         else
@@ -161,26 +163,31 @@
             player.setVelocityY(0)
             ismovingy = false;
         }
-        console.log(ismovingx||ismovingy);
+        //console.log(ismovingx||ismovingy);
 
         var secTime = this.initialTime;
-        console.log(secTime);
+        //console.log(secTime);
 
         var preGridX = Phaser.Math.Between(0, 1920);
         var preGridY = Phaser.Math.Between(0, 1080);
         if (secTime % 2 == 0)
         {
             if (Phaser.Math.Between(0, 2000) < 50){
-                console.log("off");
+                //console.log("off");
                 let myItem = new Item(this,  Phaser.Math.Between(0, 2000), Phaser.Math.Between(0, 1500));
                 this.physics.add.collider(myItem, platforms);
                 items.push(myItem);
             }
         }
+        if (secTime % 500 == 0) {
+            //console.log(mad);
+            squidward.madge();
+        }
     }
 
     class Player extends Phaser.Physics.Arcade.Sprite
     {
+        speed = 50;
         constructor(scene, x, y, spritesheet)
         {
             super(scene, x, y, spritesheet);
@@ -189,7 +196,9 @@
             this.setScale(0.1);
             this.setCollideWorldBounds(true);
             this.setGravityY(0);
+
         }
+
     }
 
     class Item extends Phaser.Physics.Arcade.Sprite
@@ -232,11 +241,21 @@
         }
         madge() {
             mad = true;
+
+        }
+        sadge() {
+            mad = false;
         }
     }
     function collectItem(player, item)
     {
         item.disableBody(true, true); //remove that particular carrot from the game (physics and visibility)
+        player.speed = 100;
+        setTimeout(goSlow, 3000);
+    }
+    function goSlow() {
+        console.log("it works");
+        player.speed = 50;
 
     }
 
