@@ -44,8 +44,12 @@
     var cursors;
     var keys;
     var space;
-    var ismovingx;
-    var ismovingy;
+    var p1ismovingx;
+    var p1ismovingy;
+    var p1ismoving;
+    var p2ismovingx;
+    var p2ismovingy;
+    var p2ismoving;
     var isfaster;
     var graphics;
     var mad;
@@ -59,7 +63,7 @@
         this.load.image('platform', 'platform.png');
         this.load.image('clarinet', 'clarinet.png');
         this.load.image('sunglasses', 'sunglasses.png');
-        this.load.image('squidmad', 'Squidward.png');
+        this.load.image('squidmad', 'SquidwardOpen.png');
         this.load.image('squidcalm', 'SquidwardClosed.png');
         this.load.atlas('seacreatures', 'spritesheet (1).png', 'spritesheet (2).json');
     }
@@ -143,6 +147,8 @@
 
     function update()
     {
+        p1ismoving = p1ismovingy || p1ismovingx;
+        p2ismoving = p2ismovingy || p2ismovingx;
         //Player will not move in the x-axis unless a movement key is being pressed
         //player.setVelocityX(0);
 
@@ -154,8 +160,14 @@
         player2.setDragX(1500);
         player2.setDragY(1500);
         playerTwo();
+        console.log(mad);
 
-
+        if(mad && p1ismoving) {
+            console.log("p1 died");
+        }
+        if(mad && p2ismoving) {
+            console.log("p2 died");
+        }
 
         var secTime = this.initialTime;
         var randNum = Phaser.Math.Between(0, 2000);
@@ -178,7 +190,7 @@
             squidward.madge();
         }
 
-        console.log(player.isSunglasses);
+        //console.log(player.isSunglasses);
     }
 
     function playerOne(){
@@ -186,32 +198,32 @@
         {
             player.setVelocityX(-player.speed);
             // console.log(player.speed);
-            ismovingx = true;
+            p1ismovingx = true;
         }
         else if (keys.D.isDown)
         {
             player.setVelocityX(player.speed);
-            ismovingx = true;
+            p1ismovingx = true;
         }
         else
         {
             player.setVelocityX(0)
-            ismovingx = false;
+            p1ismovingx = false;
         }
         if (keys.S.isDown)
         {
             player.setVelocityY(player.speed);
-            ismovingy = true;
+            p1ismovingy = true;
         }
         else if (keys.W.isDown)
         {
             player.setVelocityY(-player.speed);
-            ismovingy = true;
+            p1ismovingy = true;
         }
         else
         {
             player.setVelocityY(0)
-            ismovingy = false;
+            p1ismovingy = false;
         }
     }
     function playerTwo(){
@@ -219,35 +231,35 @@
         {
             player2.setVelocityX(-player2.speed);
             // console.log(player.speed);
-            ismovingx = true;
+            p2ismovingx = true;
         }
         else if (cursors.right.isDown)
         {
             player2.setVelocityX(player2.speed);
-            ismovingx = true;
+            p2ismovingx = true;
         }
         else
         {
             player2.setVelocityX(0)
-            ismovingx = false;
+            p2ismovingx = false;
         }
         if (cursors.down.isDown)
         {
             player2.setVelocityY(player2.speed);
-            ismovingy = true;
+            p2ismovingy = true;
         }
         else if (cursors.up.isDown)
         {
             player2.setVelocityY(-player2.speed);
-            ismovingy = true;
+            p2ismovingy = true;
         }
         else
         {
             player2.setVelocityY(0)
-            ismovingy = false;
+            p2ismovingy = false;
         }
 
-        console.log(player.isSunglasses);
+        //console.log(player.isSunglasses);
     }
 
     class Player extends Phaser.Physics.Arcade.Sprite
