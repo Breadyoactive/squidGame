@@ -69,13 +69,12 @@
        player = new Player(this, 400, 400, 'squid', anims);
        this.physics.add.collider(player, platforms);
        player.play(anims);
-        player.body.setSize(1000, 1000);
+       player.body.setSize(1000, 1000);
 
        //Set up user input
        cursors = this.input.keyboard.createCursorKeys();
        keys = this.input.keyboard.addKeys('A, D, S, W');
 
-       let squid = new SeaCreature(this, 700, 300, 'seacreatures', 'squidman');
 
 
 
@@ -132,14 +131,32 @@
         //graphics.strokeRectShape(bounds);
 
         //64 x 36
-        let tempRand = Phaser.Math.Between(0, 2000);
-        if (tempRand == 1){
+        //
+        // var timer = scene.time.addEvent({
+        //     delay: 500,                // ms
+        //     callback: callback,
+        //     //args: [],
+        //     callbackScope: thisArg,
+        //     loop: true
+        // });
 
+        // let tempRand = Phaser.Math.Between(0, 2000);
+        // // var elapsed = timer.getElapsedSeconds();
+        // if (tempRand < 100){
+        //
+        //
+        //     let myItem = new Item(this,  Phaser.Math.Between(0, 2000), Phaser.Math.Between(0, 1500));
+        //     this.physics.add.collider(myItem, platforms);
+        // }
 
-            let myItem = new Item(this,  Phaser.Math.Between(0, 2000), Phaser.Math.Between(0, 1500));
-            this.physics.add.collider(myItem, platforms);
-        }
-
+        // for (x = 0; x < 64; x ++){
+        //     for (y = 0; y < 36; y ++){
+        //         let myItem = new Item(this,  x * 28, y * 28 );
+        //         this.physics.add.collider(myItem, platforms);
+        //     }
+        // }
+        let myItem = new Item(this,  1920/2, 1080/2 );
+        this.physics.add.collider(myItem, platforms);
     }
 
     class Player extends Phaser.Physics.Arcade.Sprite
@@ -162,9 +179,10 @@
             super(scene, x, y, 'clarinet');
             scene.add.existing(this);
             scene.physics.add.existing(this);
-            this.setCollideWorldBounds(true);
-            this.setScale(0.02);
-
+            this.setCollideWorldBounds(false);
+            this.setScale(0.1);
+            this.body.setSize(150, 150);
+            this.body.setOffset(-150, 150);
             this.setGravityY(0);
         }
     }
