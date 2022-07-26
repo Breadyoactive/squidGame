@@ -38,7 +38,7 @@
     var map;
     var player;
     var seacreatures = [];
-
+    var items = [];
     //Keyboard controls
     var cursors;
     var keys;
@@ -70,11 +70,12 @@
        this.physics.add.collider(player, platforms);
        player.play(anims);
        player.body.setSize(500, 500);
-
+       this.physics.add.overlap(player, items, collectItem, null, this);
        //Set up user input
        cursors = this.input.keyboard.createCursorKeys();
        keys = this.input.keyboard.addKeys('A, D, S, W');
-
+        let myItem = new Item(this,  1920/2, 1080/2 );
+        items.push(myItem);
 
 
 
@@ -155,7 +156,7 @@
         //         this.physics.add.collider(myItem, platforms);
         //     }
         // }
-        let myItem = new Item(this,  1920/2, 1080/2 );
+
         // this.body.setSize(200, 200);
     }
 
@@ -204,6 +205,11 @@
         {
             scene.tweens.add({ targets: this, x: xDist, y: yDist, duration: time, ease: 'Sine.easeInOut', repeat: -1, yoyo: true });
         }
+    }
+    function collectItem(player, item)
+    {
+        item.disableBody(true, true); //remove that particular carrot from the game (physics and visibility)
+
     }
 
     </script>
