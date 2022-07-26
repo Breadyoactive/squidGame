@@ -38,7 +38,7 @@
     var squids;
     var map;
     var player;
-    var seacreatures = [];
+    var enemies = [];
     var items = [];
     //Keyboard controls
     var cursors;
@@ -65,6 +65,8 @@
         this.load.image('sunglasses', 'sunglasses.png');
         this.load.image('squidmad', 'SquidwardOpen.png');
         this.load.image('squidcalm', 'SquidwardClosed.png');
+        this.load.image('finish', 'line.png');
+
         this.load.atlas('seacreatures', 'spritesheet (1).png', 'spritesheet (2).json');
     }
 
@@ -78,6 +80,10 @@
 
        //Create the platforms and the player character set to collide with the platforms
        createPlatforms(this);
+
+       finishingLine = this.add.sprite(1800, 450, 'finish');
+       finishingLine.scale = 1.1;
+       finishingLine.angle = 90;
 
         squids = this.physics.add.staticGroup();
         squidmad = squids.create(game.scale.width-210, 360, 'squidmad');
@@ -296,9 +302,7 @@
         }
     }
 
-
-
-    class SeaCreature extends Phaser.Physics.Arcade.Sprite
+    class Enemy extends Phaser.Physics.Arcade.Sprite
     {
         constructor(scene, x, y, spritesheet,ani)
         {
@@ -356,7 +360,6 @@
         // console.log("it works");
         player.speed = 200;
         player.isSunglasses = false;
-
     }
     function sadge() {
         mad = false;
