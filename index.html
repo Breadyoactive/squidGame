@@ -35,6 +35,7 @@
 
     //Game Objects
     var platforms;
+    var squids;
     var map;
     var player;
     var seacreatures = [];
@@ -49,6 +50,9 @@
     var graphics;
     var mad;
     var myTimeout;
+    var squidmad;
+    var squidcalm;
+
     function preload()
     {
         this.load.image('bg', 'backround.png');
@@ -56,7 +60,7 @@
         this.load.image('clarinet', 'clarinet.png');
         this.load.image('sunglasses', 'sunglasses.png');
         this.load.image('squidmad', 'Squidward.png');
-
+        this.load.image('squidcalm', 'SquidwardClosed.png');
         this.load.atlas('seacreatures', 'spritesheet (1).png', 'spritesheet (2).json');
     }
 
@@ -70,6 +74,10 @@
 
        //Create the platforms and the player character set to collide with the platforms
        createPlatforms(this);
+
+        squids = this.physics.add.staticGroup();
+        squidmad = squids.create(game.scale.width-210, 360, 'squidmad');
+        squidcalm = squids.create(game.scale.width-210, 360, 'squidcalm');
 
        player = new Player(this, 400, 400, 'squid', anims);
        player2 = new Player(this, 400, 800, 'squid', anims);
@@ -90,7 +98,7 @@
         let myItem = new Item(this,  1920/2, 1080/2 );
         items.push(myItem);
 
-        squidward = new Squidward();
+        squidward = new Squidward(this);
 
        graphics = this.add.graphics();
 
@@ -135,6 +143,10 @@
 
     function update()
     {
+        //Player will not move in the x-axis unless a movement key is being pressed
+        //player.setVelocityX(0);
+
+        //Player has "drag" on the x-axis meaning they slide a bit after an input
         player.setDragX(1500);
         player.setDragY(1500);
         playerOne();
@@ -234,6 +246,8 @@
             player2.setVelocityY(0)
             ismovingy = false;
         }
+
+        console.log(player.isSunglasses);
     }
 
     class Player extends Phaser.Physics.Arcade.Sprite
@@ -290,11 +304,19 @@
     }
 
     class Squidward {
-        constructor() {
+        constructor(scene) {
+
             mad = false;
+            squidmad.visible = false;
+            squidcalm.visible = true;
+
+
         }
         madge() {
             mad = true;
+            squidmad.visible = true;
+            squidcalm.visible = false;
+            setTimeout(sadge, 3000);
 
         }
         sadge() {
@@ -323,6 +345,11 @@
         player.speed = 200;
         player.isSunglasses = false;
 
+    }
+    function sadge() {
+        mad = false;
+        squidmad.visible = false;
+        squidcalm.visible = true;
     }
 
     </script>
