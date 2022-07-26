@@ -56,7 +56,9 @@
     var myTimeout;
     var squidmad;
     var squidcalm;
-
+    var red;
+    var yellow;
+    var green;
     function preload()
     {
         this.load.image('bg', 'backround.png');
@@ -67,6 +69,9 @@
         this.load.image('squidcalm', 'SquidwardClosed.png');
         this.load.image('finish', 'line.png');
 
+        this.load.image('red','stoplightRed.png');
+        this.load.image('yellow','stoplightYellow.png');
+        this.load.image('green','stoplightGreen.png');
         this.load.atlas('seacreatures', 'spritesheet (1).png', 'spritesheet (2).json');
     }
 
@@ -86,9 +91,16 @@
        finishingLine.angle = 90;
 
         squids = this.physics.add.staticGroup();
-        squidmad = squids.create(game.scale.width-210, 360, 'squidmad');
-        squidcalm = squids.create(game.scale.width-210, 360, 'squidcalm');
+        squidmad = squids.create(game.scale.width-135, 360, 'squidmad');
+        squidcalm = squids.create(game.scale.width-135, 360, 'squidcalm');
 
+        lights = this.physics.add.staticGroup();
+        red = lights.create(game.scale.width-100,60, 'red');
+        red.setScale(0.25);
+        yellow = lights.create(game.scale.width-100,60, 'yellow');
+        yellow.setScale(0.25);
+        green = lights.create(game.scale.width-100,60, 'green');
+        green.setScale(0.25);
        player = new Player(this, 400, 400, 'squid', anims);
        player2 = new Player(this, 400, 800, 'squid', anims);
 
@@ -193,7 +205,10 @@
         }
         if (secTime % 500 == 0) {
             //console.log(mad);
-            squidward.madge();
+            red.visible = false;
+            yellow.visible = true;
+            green.visible = false;
+            setTimeout(madge, 3000);
         }
 
         //console.log(player.isSunglasses);
@@ -302,7 +317,9 @@
         }
     }
 
-    class Enemy extends Phaser.Physics.Arcade.Sprite
+
+
+    class SeaCreature extends Phaser.Physics.Arcade.Sprite
     {
         constructor(scene, x, y, spritesheet,ani)
         {
@@ -325,19 +342,13 @@
             mad = false;
             squidmad.visible = false;
             squidcalm.visible = true;
-
-
-        }
-        madge() {
-            mad = true;
-            squidmad.visible = true;
-            squidcalm.visible = false;
-            setTimeout(sadge, 3000);
+            red.visible = false;
+            yellow.visible = false;
+            green.visible = true;
 
         }
-        sadge() {
-            mad = false;
-        }
+
+
     }
     function collectItem(player, item)
     {
@@ -360,11 +371,25 @@
         // console.log("it works");
         player.speed = 200;
         player.isSunglasses = false;
+
     }
     function sadge() {
         mad = false;
         squidmad.visible = false;
         squidcalm.visible = true;
+        red.visible = false;
+        yellow.visible = false;
+        green.visible = true;
+    }
+    function madge() {
+        mad = true;
+        squidmad.visible = true;
+        squidcalm.visible = false;
+        red.visible = true;
+        yellow.visible = false;
+        green.visible = false;
+        setTimeout(sadge, 3000);
+
     }
 
     </script>
