@@ -81,7 +81,31 @@
 
        graphics = this.add.graphics();
 
+        this.initialTime = 10000;
 
+        text = this.add.text(32, 32, 'Countdown: ' + formatTime(this.initialTime / 1000));
+
+        // Each 1000 ms call onEvent
+        timedEvent = this.time.addEvent({ delay: 1, callback: onEvent, callbackScope: this, loop: true });
+    }
+
+
+    function formatTime(seconds){
+        // Minutes
+        var minutes = Math.floor(seconds/60);
+        // Seconds
+        var partInSeconds = seconds%60;
+        // Adds left zeros to seconds
+        partInSeconds = partInSeconds.toString().padStart(2,'0');
+        // Returns formated time
+        return `${minutes}:${partInSeconds}`;
+    }
+
+
+    function onEvent ()
+    {
+        this.initialTime -= 1; // One second
+        text.setText('Countdown: ' + formatTime(this.initialTime));
     }
 
     function createPlatforms(scene)
@@ -126,38 +150,20 @@
             player.setVelocityY(0)
         }
 
-        //let bounds = player.getBounds();
-        //graphics.clear();
-        //graphics.lineStyle(1, 0xff0000);
-        //graphics.strokeRectShape(bounds);
+        var secTime = this.initialTime;
+        console.log(secTime);
 
-        //64 x 36
-        //
-        // var timer = scene.time.addEvent({
-        //     delay: 500,                // ms
-        //     callback: callback,
-        //     //args: [],
-        //     callbackScope: thisArg,
-        //     loop: true
-        // });
-
-        // let tempRand = Phaser.Math.Between(0, 2000);
-        // // var elapsed = timer.getElapsedSeconds();
-        // if (tempRand < 100){
-        //
-        //
-        //     let myItem = new Item(this,  Phaser.Math.Between(0, 2000), Phaser.Math.Between(0, 1500));
-        //     this.physics.add.collider(myItem, platforms);
-        // }
-
-        // for (x = 0; x < 64; x ++){
-        //     for (y = 0; y < 36; y ++){
-        //         let myItem = new Item(this,  x * 28, y * 28 );
-        //         this.physics.add.collider(myItem, platforms);
-        //     }
-        // }
-
-        // this.body.setSize(200, 200);
+        var preGridX = Phaser.Math.Between(0, 1920);
+        var preGridY = Phaser.Math.Between(0, 1080);
+        if (secTime % 2 == 0)
+        {
+            if (Phaser.Math.Between(0, 2000) < 50){
+                console.log("off");
+                let myItem = new Item(this,  Phaser.Math.Between(0, 2000), Phaser.Math.Between(0, 1500));
+                this.physics.add.collider(myItem, platforms);
+                items.push(myItem);
+            }
+        }
     }
 
     class Player extends Phaser.Physics.Arcade.Sprite
