@@ -64,6 +64,7 @@
     {
         //Set the background origin to be at (0, 0) or top left corner of the image rather than the center of the image asset
        let background = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'bg').setOrigin(0, 0);
+        cursors = this.input.keyboard.createCursorKeys();
 
         var anims = this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
 
@@ -71,10 +72,18 @@
        createPlatforms(this);
 
        player = new Player(this, 400, 400, 'squid', anims);
+       player2 = new Player(this, 400, 800, 'squid', anims);
+
        this.physics.add.collider(player, platforms);
        player.play(anims);
        player.body.setSize(500, 500);
        this.physics.add.overlap(player, items, collectItem, null, this);
+
+        this.physics.add.collider(player2, platforms);
+        player2.play(anims);
+        player2.body.setSize(500, 500);
+        this.physics.add.overlap(player2, items, collectItem, null, this);
+
        //Set up user input
        cursors = this.input.keyboard.createCursorKeys();
        keys = this.input.keyboard.addKeys('A, D, S, W');
@@ -126,13 +135,41 @@
 
     function update()
     {
-        //Player will not move in the x-axis unless a movement key is being pressed
-        //player.setVelocityX(0);
-
-        //Player has "drag" on the x-axis meaning they slide a bit after an input
         player.setDragX(1500);
         player.setDragY(1500);
-        //Handle player movements
+        playerOne();
+
+        player2.setDragX(1500);
+        player2.setDragY(1500);
+        playerTwo();
+
+
+
+        var secTime = this.initialTime;
+        var randNum = Phaser.Math.Between(0, 2000);
+        if (secTime % 10 == 0)
+        {
+            if (randNum < 500){
+                //console.log("off");
+                let myItem = new Item(this,  Phaser.Math.Between(0, 2000), Phaser.Math.Between(0, 1500), 'clarinet');
+                this.physics.add.collider(myItem, platforms);
+                items.push(myItem);
+            }
+            else if (randNum < 1000){
+                let myItem = new Item(this,  Phaser.Math.Between(0, 2000), Phaser.Math.Between(0, 1500), 'sunglasses');
+                this.physics.add.collider(myItem, platforms);
+                items.push(myItem);
+            }
+        }
+        if (secTime % 500 == 0) {
+            //console.log(mad);
+            squidward.madge();
+        }
+
+        console.log(player.isSunglasses);
+    }
+
+    function playerOne(){
         if (keys.A.isDown)
         {
             player.setVelocityX(-player.speed);
@@ -164,32 +201,39 @@
             player.setVelocityY(0)
             ismovingy = false;
         }
-        //console.log(ismovingx||ismovingy);
-
-        var secTime = this.initialTime;
-        //console.log(secTime);
-
-        var randNum = Phaser.Math.Between(0, 2000);
-        if (secTime % 10 == 0)
+    }
+    function playerTwo(){
+        if (cursors.left.isDown)
         {
-            if (randNum < 500){
-                //console.log("off");
-                let myItem = new Item(this,  Phaser.Math.Between(0, 2000), Phaser.Math.Between(0, 1500), 'clarinet');
-                this.physics.add.collider(myItem, platforms);
-                items.push(myItem);
-            }
-            else if (randNum < 1000){
-                let myItem = new Item(this,  Phaser.Math.Between(0, 2000), Phaser.Math.Between(0, 1500), 'sunglasses');
-                this.physics.add.collider(myItem, platforms);
-                items.push(myItem);
-            }
+            player2.setVelocityX(-player2.speed);
+            // console.log(player.speed);
+            ismovingx = true;
         }
-        if (secTime % 500 == 0) {
-            //console.log(mad);
-            squidward.madge();
+        else if (cursors.right.isDown)
+        {
+            player2.setVelocityX(player2.speed);
+            ismovingx = true;
         }
-
-        console.log(player.isSunglasses);
+        else
+        {
+            player2.setVelocityX(0)
+            ismovingx = false;
+        }
+        if (cursors.down.isDown)
+        {
+            player2.setVelocityY(player2.speed);
+            ismovingy = true;
+        }
+        else if (cursors.up.isDown)
+        {
+            player2.setVelocityY(-player2.speed);
+            ismovingy = true;
+        }
+        else
+        {
+            player2.setVelocityY(0)
+            ismovingy = false;
+        }
     }
 
     class Player extends Phaser.Physics.Arcade.Sprite
@@ -276,7 +320,7 @@
     }
     function defaultPlayer() {
         // console.log("it works");
-        player.speed = 50;
+        player.speed = 200;
         player.isSunglasses = false;
 
     }
