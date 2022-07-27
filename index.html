@@ -173,12 +173,13 @@
         //player.setVelocityX(0);
 
         //Player has "drag" on the x-axis meaning they slide a bit after an input
-        player.setDragX(1500);
-        player.setDragY(1500);
+        player.setDamping(true);
+        player.setDragX(0.1);
+        player.setDragY(0.1);
         playerOne();
-
-        player2.setDragX(1500);
-        player2.setDragY(1500);
+        player2.setDamping(true);
+        player2.setDragX(0.1);
+        player2.setDragY(0.1);
         playerTwo();
         // console.log(mad);
         console.log(player2.isSunglasses);
@@ -232,7 +233,7 @@
         }
         else
         {
-            player.setVelocityX(0)
+
             p1ismovingx = false;
         }
         if (keys.S.isDown)
@@ -247,7 +248,7 @@
         }
         else
         {
-            player.setVelocityY(0)
+
             p1ismovingy = false;
         }
     }
@@ -265,7 +266,6 @@
         }
         else
         {
-            player2.setVelocityX(0)
             p2ismovingx = false;
         }
         if (cursors.down.isDown)
@@ -280,7 +280,7 @@
         }
         else
         {
-            player2.setVelocityY(0)
+
             p2ismovingy = false;
         }
 
