@@ -131,7 +131,9 @@
         enemy3.play(enemyAnims);
         enemy3.body.setSize(250,250);
         enemy3.addTween(this, enemy3.x +100, enemy3.y, 4000);
-
+        enemies.push(enemy1);
+        enemies.push(enemy2);
+        enemies.push(enemy3);
 
 
 
@@ -144,6 +146,7 @@
        this.physics.add.overlap(player, items, collectItem, null, this);
        this.physics.add.overlap(player, obstacles, moveBack, null, this);
        this.physics.add.overlap(player, finishingLine, win, null, this);
+       this.physics.add.overlap(player, enemies, die, null, this);
 
 
 
@@ -155,6 +158,7 @@
         this.physics.add.overlap(player2, items, collectItem, null, this);
         this.physics.add.overlap(player2, obstacles, moveBack, null, this);
         this.physics.add.overlap(player2, finishingLine, win2, null, this);
+        this.physics.add.overlap(player2, enemies, die, null, this);
 
 
         //Set up user input
@@ -306,6 +310,10 @@
 
         }
 
+
+    }
+    function die(player) {
+        player.setPosition(100,1080/2);
     }
 
     function resetPlayerMode(){
