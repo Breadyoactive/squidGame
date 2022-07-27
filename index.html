@@ -181,11 +181,13 @@
         player2.setDragY(1500);
         playerTwo();
         // console.log(mad);
-
-        if(mad && p1ismoving) {
+        console.log(player2.isSunglasses);
+        if(mad && p1ismoving && !player.isSunglasses) {
+            player.setPosition(0,0);
             // console.log("p1 died");
         }
-        if(mad && p2ismoving) {
+        if(mad && p2ismoving && !player2.isSunglasses) {
+            player2.setPosition(0,0);
             // console.log("p2 died");
         }
 
@@ -355,23 +357,24 @@
     }
     function collectItem(player, item)
     {
-        item.disableBody(true, true); //remove that particular carrot from the game (physics and visibility)
-        for (i = 0; i < items.length; i++){
-            if (items[i] == item){
-                if (items[i].myItemType == 'clarinet'){
-                    player.speed = 100;
-                    setTimeout(defaultPlayer, 3000);
-                }
-                else if (items[i].myItemType == 'sunglasses'){
-                    player.isSunglasses = true;
-                    setTimeout(defaultPlayer, 3000);
+        if(!player.isSunglasses && player.speed == 200) {
+            item.disableBody(true, true);
+            for (i = 0; i < items.length; i++) {
+                if (items[i] === item) {
+                    if (items[i].myItemType == 'clarinet') {
+                        player.speed = 300;
+                        setTimeout(defaultPlayer, 3000, player);
+                    } else if (items[i].myItemType == 'sunglasses') {
+                        player.isSunglasses = true;
+                        setTimeout(defaultPlayer, 3000, player);
+                    }
                 }
             }
         }
 
     }
-    function defaultPlayer() {
-        // console.log("it works");
+    function defaultPlayer(player) {
+        console.log("it works");
         player.speed = 200;
         player.isSunglasses = false;
 
