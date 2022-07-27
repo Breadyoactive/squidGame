@@ -1,7 +1,7 @@
 {
 	"frames": [
 		{
-			"filename": "enemySprite1.png",
+			"filename": "enemySprite0",
 			"frame": {
 				"x": 1,
 				"y": 1,
@@ -22,7 +22,7 @@
 			}
 		},
 		{
-			"filename": "enemySprite2.png",
+			"filename": "enemySprite1",
 			"frame": {
 				"x": 253,
 				"y": 1,
@@ -43,7 +43,7 @@
 			}
 		},
 		{
-			"filename": "enemySprite3.png",
+			"filename": "enemySprite2",
 			"frame": {
 				"x": 1,
 				"y": 303,

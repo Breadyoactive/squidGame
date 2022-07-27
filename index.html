@@ -57,6 +57,7 @@
     var squidmad;
     var squidcalm;
 
+
     function preload()
     {
         this.load.image('bg', 'backround.png');
@@ -71,6 +72,7 @@
         this.load.image('yellow','stoplightYellow.png');
         this.load.image('green','stoplightGreen.png');
         this.load.atlas('seacreatures', 'spritesheet (1).png', 'spritesheet (2).json');
+        this.load.atlas('enemy','enemySpriteSheet.png', 'enemySpriteSheet.json');
     }
 
     function create()
@@ -80,8 +82,7 @@
         cursors = this.input.keyboard.createCursorKeys();
 
         var anims = this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
-
-       //Create the platforms and the player character set to collide with the platforms
+        var enemyAnims = this.anims.create({key: 'badman', frames: this.anims.generateFrameNames('enemy', {prefix: 'enemySprite', end: 2, zeroPad: 1}), repeat: -1, frameRate: 10});
        createPlatforms(this);
 
        finishingLine = new FinishLine(this, 1800, 450);
@@ -100,8 +101,23 @@
         yellow.setScale(0.25);
         green = lights.create(game.scale.width-100,60, 'green');
         green.setScale(0.25);
-       player = new Player(this, 400, 400, 'squid', anims);
-       player2 = new Player(this, 400, 800, 'squid', anims);
+       player = new Player(this, 400, 400, 'test');
+       player2 = new Player(this, 400, 800, 'yourmom');
+        enemy1 = new Enemy(this, 500, 800, 'hh');
+        enemy2 = new Enemy(this, 600, 800, 'hh');
+        enemy3 = new Enemy(this, 700, 800, 'hh');
+        enemy1.play(enemyAnims);
+        enemy1.body.setSize(250,250);
+        enemy1.addTween(this, enemy1.x +100, enemy1.y, 4000);
+        enemy2.play(enemyAnims);
+        enemy2.body.setSize(250,250);
+        enemy2.addTween(this, enemy2.x +100, enemy2.y, 4000);
+        enemy3.play(enemyAnims);
+        enemy3.body.setSize(250,250);
+        enemy3.addTween(this, enemy3.x +100, enemy3.y, 4000);
+
+
+
 
        this.physics.add.collider(player, platforms);
        player.play(anims);
@@ -168,6 +184,7 @@
 
         platforms.create(250, 250, 'platform');
         platforms.create(950, 400, 'platform');
+
     }
 
     function update()
@@ -213,7 +230,7 @@
                 items.push(myItem);
             }
         }
-        if (secTime % 500 == 0) {
+        if (secTime % 300 == 0) {
             //console.log(mad);
             red.visible = false;
             yellow.visible = true;
@@ -346,13 +363,14 @@
 
     class Enemy extends Phaser.Physics.Arcade.Sprite
     {
-        constructor(scene, x, y, spritesheet,ani)
+        constructor(scene, x, y, spritesheet)
         {
             super(scene, x, y, spritesheet);
             scene.add.existing(this);
             scene.physics.add.existing(this);
-            this.setScale(0.02);
-            //this.play(ani);
+            this.setScale(0.25);
+            this.setCollideWorldBounds(true);
+            this.setGravityY(0);
         }
 
         addTween(scene, xDist, yDist, time)
