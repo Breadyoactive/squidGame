@@ -84,9 +84,10 @@
        //Create the platforms and the player character set to collide with the platforms
        createPlatforms(this);
 
-       finishingLine = this.add.sprite(1800, 450, 'finish');
+       finishingLine = new FinishLine(this, 1800, 450);
        finishingLine.scale = 1.1;
        finishingLine.angle = 90;
+
 
         squids = this.physics.add.staticGroup();
         squidmad = squids.create(game.scale.width-135, 360, 'squidmad');
@@ -106,7 +107,11 @@
        player.play(anims);
        player.body.setSize(500, 500);
        this.physics.add.overlap(player, items, collectItem, null, this);
-       this.physics.add.overlap(player, finishingLine, win, null, this);
+       // this.physics.add.overlap(player, finishingLine, win, null, this);
+        this.physics.add.collider(player2, finishingLine, win);
+        this.physics.add.overlap(player, finishingLine, win, null, this);
+
+
 
         this.physics.add.collider(player2, platforms);
         player2.play(anims);
@@ -322,6 +327,21 @@
         }
     }
 
+    class FinishLine extends Phaser.Physics.Arcade.Sprite
+    {
+        constructor(scene, x, y)
+        {
+            super(scene, x, y, 'finish');
+            scene.add.existing(this);
+            scene.physics.add.existing(this);
+
+            this.setCollideWorldBounds(false);
+            this.setScale(5);
+            this.body.setSize(120, 2000);
+
+            this.setGravityY(0);
+        }
+    }
 
 
     class SeaCreature extends Phaser.Physics.Arcade.Sprite
@@ -398,8 +418,8 @@
 
     }
 
-    function win(playerWon){
-        console.log(playerWon);
+    function win(){
+        console.log("hyi");
     }
 
     </script>
