@@ -80,6 +80,9 @@
         this.load.atlas('enemy','enemySpriteSheet.png', 'enemySpriteSheet.json');
         this.load.atlas('p2', ' Char2SpriteSheet.png', 'Char2SpriteSheet.json');
 
+        this.load.image('p1w', 'playerOneWin.png');
+        this.load.image('p2w', 'playerTwoWin.png');
+
         this.load.image('tileset', 'download.jpg');
         this.load.tilemapTiledJSON('tilemap', 'map2ver3.json');
     }
@@ -150,6 +153,7 @@
        this.physics.add.overlap(player, items, collectItem, null, this);
        this.physics.add.overlap(player, obstacles, moveBack, null, this);
        this.physics.add.overlap(player, finishingLine, win, null, this);
+        //this.physics.add.overlap(player, finishingLine);
        this.physics.add.overlap(player, enemies, die, null, this);
 
 
@@ -162,6 +166,7 @@
         this.physics.add.overlap(player2, items, collectItem, null, this);
         this.physics.add.overlap(player2, obstacles, moveBack, null, this);
         this.physics.add.overlap(player2, finishingLine, win2, null, this);
+        //this.physics.add.overlap(player2, finishingLine);
         this.physics.add.overlap(player2, enemies, die, null, this);
 
 
@@ -223,6 +228,7 @@
 
     function update()
     {
+        player.body.touching.finish ? win(this) : L();
         p1ismoving = p1ismovingy || p1ismovingx;
         p2ismoving = p2ismovingy || p2ismovingx;
         //Player will not move in the x-axis unless a movement key is being pressed
@@ -316,8 +322,9 @@
 
 
     }
+    function L() {}
     function die(player) {
-        player.setPosition(100,1080/2);
+        player.setPosition(1700,1080/2);
     }
 
     function resetPlayerMode(){
@@ -541,8 +548,11 @@
 
     }
 
-    function win(){
-        // console.log("hyi");
+    function win(scene){
+        console.log("win");
+        let p1w = scene.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'bg').setOrigin(0, 0);
+
+
     }
     function win2(){
         // console.log("hyi");
