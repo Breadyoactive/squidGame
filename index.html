@@ -1,4 +1,4 @@
-<!DOCTYPE html>\
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -61,6 +61,9 @@
     var freezePlayer = false;
     var freezePlayer2 = false;
 
+    var inZone = false;
+    var gameEnd = false;
+
     function preload()
     {
         this.load.image('bg', 'Background2.png');
@@ -73,6 +76,9 @@
         this.load.image('spike', 'spikes.png');
         this.load.image('bearTrap', 'bearTrap.png');
 
+        this.load.image('playerTwoWin', 'playerTwoWin.png');
+        this.load.image('playerOneWin', 'playerOneWin.png');
+
         this.load.image('red','stoplightRed.png');
         this.load.image('yellow','stoplightYellow.png');
         this.load.image('green','stoplightGreen.png');
@@ -80,11 +86,8 @@
         this.load.atlas('enemy','enemySpriteSheet.png', 'enemySpriteSheet.json');
         this.load.atlas('p2', ' Char2SpriteSheet.png', 'Char2SpriteSheet.json');
 
-        this.load.image('p1w', 'playerOneWin.png');
-        this.load.image('p2w', 'playerTwoWin.png');
-
         this.load.image('tileset', 'download.jpg');
-        this.load.tilemapTiledJSON('tilemap', 'map2ver3.json');
+        this.load.tilemapTiledJSON('tilemap', 'map2ver2.json');
     }
 
     function create()
@@ -93,7 +96,7 @@
        let background = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'bg').setOrigin(0, 0);
         map = this.make.tilemap({key: 'tilemap'});
         var tileset = map.addTilesetImage('tileset', 'tileset');
-        var layer = map.createLayer("Tile Layer 1", tileset);
+        var layer = map.createStaticLayer("Tile Layer 1", tileset);
 
         layer.setCollisionByExclusion([-1]);
 
@@ -108,7 +111,7 @@
 
        finishingLine = new FinishLine(this, 1750, 450);
        finishingLine.scale = 1.2;
-
+       finishingLine.angle = 0;
 
 
         squids = this.physics.add.staticGroup();
@@ -162,13 +165,16 @@
         this.physics.add.collider(player2, layer);
         player2.play(anims2);
         player2.body.setSize(400, 400);
+
         this.physics.add.collider(player2, platforms);
         this.physics.add.overlap(player2, items, collectItem, null, this);
         this.physics.add.overlap(player2, obstacles, moveBack, null, this);
         this.physics.add.overlap(player2, finishingLine, win2, null, this);
         //this.physics.add.overlap(player2, finishingLine);
         this.physics.add.overlap(player2, enemies, die, null, this);
-
+        this.physics.add.overlap(items, layer, function () {
+            inZone = true;
+        });
 
         //Set up user input
        cursors = this.input.keyboard.createCursorKeys();
@@ -186,7 +192,7 @@
 
         // Each 1000 ms call onEvent
         timedEvent = this.time.addEvent({ delay: 1, callback: onEvent, callbackScope: this, loop: true });
-
+        // console.log(this.initialTime);
 
 
         for (i = 0; i < 50; i++){
@@ -194,6 +200,11 @@
             this.physics.add.collider(obs);
             obstacles.push(obs);
         }
+
+    }
+    function deleteItem(item, layer){
+        item.disableBody(true, true);
+        console.log(item);
     }
 
     function formatTime(seconds){
@@ -212,6 +223,7 @@
     {
         this.initialTime -= 1; // One second
         text.setText('Countdown: ' + formatTime(this.initialTime));
+        // console.log(this.initialTime);
     }
 
     function createPlatforms(scene)
@@ -228,72 +240,92 @@
 
     function update()
     {
-        player.body.touching.finish ? win(this) : L();
-        p1ismoving = p1ismovingy || p1ismovingx;
-        p2ismoving = p2ismovingy || p2ismovingx;
-        //Player will not move in the x-axis unless a movement key is being pressed
-        //player.setVelocityX(0);
+        BeginUpdate();
 
-        //Player has "drag" on the x-axis meaning they slide a bit after an input
-        player.setDamping(true);
-        player.setDragX(0.1);
-        player.setDragY(0.1);
-        if (!freezePlayer){
-            playerOne();
+        if (!gameEnd){
+            if (inZone){
+                console.log('trues');
+            }
+            else{
+                console.log('falsey');
 
-        }
-        player2.setDamping(true);
-        player2.setDragX(0.1);
-        player2.setDragY(0.1);
-        if (!freezePlayer2){
-            playerTwo();
+            }
+            inZone = false;
 
-        }
-        // console.log(mad);
-        // console.log(player2.isSunglasses);
-        if(mad && p1ismoving && !player.isSunglasses) {
-            player.setPosition(100,1080/2);
-            player.speed = 0;
-            setTimeout(defaultPlayer, 3000, player);
 
-            // console.log("p1 died");
-        }
-        if(mad && p2ismoving && !player2.isSunglasses) {
-            player2.setPosition(100,1080/2);
-            player2.speed = 0;
-            setTimeout(defaultPlayer, 3000, player2);
+            p1ismoving = p1ismovingy || p1ismovingx;
+            p2ismoving = p2ismovingy || p2ismovingx;
+            //Player will not move in the x-axis unless a movement key is being pressed
+            //player.setVelocityX(0);
 
-            // console.log("p2 died");
-        }
+            //Player has "drag" on the x-axis meaning they slide a bit after an input
+            player.setDamping(true);
+            player.setDragX(0.1);
+            player.setDragY(0.1);
+            if (!freezePlayer){
+                playerOne();
 
-        var secTime = this.initialTime;
-        var randNum = Phaser.Math.Between(0, 2000);
-        if (secTime % 10 === 0)
-        {
-            if (items.length < 50){
-                if (randNum < 500){
-                    //console.log("off");
-                    let myItem = new Item(this,  Phaser.Math.Between(400, 2000), Phaser.Math.Between(0, 1500), 'clarinet');
-                    this.physics.add.collider(myItem);
-                    items.push(myItem);
-                }
-                else if (randNum < 1000){
-                    let myItem = new Item(this,  Phaser.Math.Between(400, 2000), Phaser.Math.Between(0, 1500), 'sunglasses');
-                    this.physics.add.collider(myItem);
-                    items.push(myItem);
-                }
+            }
+            player2.setDamping(true);
+            player2.setDragX(0.1);
+            player2.setDragY(0.1);
+            if (!freezePlayer2){
+                playerTwo();
+
+            }
+            // console.log(mad);
+            // console.log(player2.isSunglasses);
+            if(mad && p1ismoving && !player.isSunglasses) {
+                player.setPosition(100,1080/2);
+                player.speed = 0;
+                setTimeout(defaultPlayer, 3000, player);
+
+                // console.log("p1 died");
+            }
+            if(mad && p2ismoving && !player2.isSunglasses) {
+                player2.setPosition(100,1080/2);
+                player2.speed = 0;
+                setTimeout(defaultPlayer, 3000, player2);
+
+                // console.log("p2 died");
             }
 
-        }
-        if (secTime % 500 === 0) {
-            //console.log(mad);
-            red.visible = false;
-            yellow.visible = true;
-            green.visible = false;
-            setTimeout(madge, 3000);
-        }
+            // console.log('oog');
+            var secTime = this.initialTime;
+            var randNum = Phaser.Math.Between(0, 2000);
+            // console.log(this.initialTime);
+            if (secTime % 10 === 0)
+            {
+                // console.log('oog2');
+                if (items.length < 50){
+                    if (randNum < 500){
+                        // console.log("off");
+                        let myItem = new Item(this,  Phaser.Math.Between(400, 2000), Phaser.Math.Between(0, 1500), 'clarinet');
+                        this.physics.add.collider(myItem);
+                        items.push(myItem);
+                    }
+                    else if (randNum < 1000){
+                        let myItem = new Item(this,  Phaser.Math.Between(400, 2000), Phaser.Math.Between(0, 1500), 'sunglasses');
+                        this.physics.add.collider(myItem);
+                        items.push(myItem);
+                    }
+                }
 
-        //console.log(player.isSunglasses);
+            }
+            if (secTime % 500 === 0) {
+                //console.log(mad);
+                red.visible = false;
+                yellow.visible = true;
+                green.visible = false;
+                setTimeout(madge, 3000);
+            }
+
+            //console.log(player.isSunglasses);
+        }
+    }
+
+    function BeginUpdate(){
+
     }
 
     function moveBack(mPlayer, obstacle){
@@ -322,9 +354,9 @@
 
 
     }
-    function L() {}
+
     function die(player) {
-        player.setPosition(1700,1080/2);
+        player.setPosition(100,1080/2);
     }
 
     function resetPlayerMode(){
@@ -404,7 +436,7 @@
 
     class Player extends Phaser.Physics.Arcade.Sprite
     {
-        speed = 200;
+        speed = 125;
         isSunglasses = false;
         constructor(scene, x, y, spritesheet)
         {
@@ -506,16 +538,17 @@
     }
     function collectItem(player, item)
     {
-        if(!player.isSunglasses && player.speed === 200) {
+        console.log('g');
+        if(!player.isSunglasses && player.speed === 125) {
             item.disableBody(true, true);
             for (i = 0; i < items.length; i++) {
                 if (items[i] === item) {
                     if (items[i].myItemType === 'clarinet') {
-                        player.speed = 300;
+                        player.speed = 250;
                         setTimeout(defaultPlayer, 3000, player);
                     } else if (items[i].myItemType === 'sunglasses') {
                         player.isSunglasses = true;
-                        setTimeout(defaultPlayer, 10000, player);
+                        setTimeout(defaultPlayer, 5000, player);
                     }
                 }
             }
@@ -524,7 +557,7 @@
     }
     function defaultPlayer(player) {
         // console.log("it works");
-        player.speed = 200;
+        player.speed = 125;
         player.isSunglasses = false;
 
     }
@@ -548,14 +581,18 @@
 
     }
 
-    function win(scene){
-        console.log("win");
-        let p1w = scene.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'bg').setOrigin(0, 0);
-
-
+    function win(){
+        gameEnd = true;
+        this.add.sprite(1920/2,1080/2,"playerOneWin");
+        endPlayer = new Player(this, 1920/2, 1080/2, 'test');
+        // player.setScale(5);
     }
     function win2(){
-        // console.log("hyi");
+        gameEnd = true;
+        this.add.sprite(1920/2,1080/2,"playerTwoWin");
+
+        // player2.setScale(5);
+
     }
 
     </script>
