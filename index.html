@@ -78,9 +78,10 @@
         this.load.image('green','stoplightGreen.png');
         this.load.atlas('seacreatures', 'spritesheet (1).png', 'spritesheet (2).json');
         this.load.atlas('enemy','enemySpriteSheet.png', 'enemySpriteSheet.json');
+        this.load.atlas('p2', ' Char2SpriteSheet.png', 'Char2SpriteSheet.json');
 
         this.load.image('tileset', 'download.jpg');
-        this.load.tilemapTiledJSON('tilemap', 'map.json');
+        this.load.tilemapTiledJSON('tilemap', 'map2ver2.json');
     }
 
     function create()
@@ -88,7 +89,7 @@
         //Set the background origin to be at (0, 0) or top left corner of the image rather than the center of the image asset
        let background = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'bg').setOrigin(0, 0);
         map = this.make.tilemap({key: 'tilemap'});
-        var tileset = map.addTilesetImage('waterfr', 'tileset');
+        var tileset = map.addTilesetImage('tileset', 'tileset');
         var layer = map.createLayer("Tile Layer 1", tileset);
 
         layer.setCollisionByExclusion([-1]);
@@ -97,6 +98,7 @@
         cursors = this.input.keyboard.createCursorKeys();
 
         var anims = this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
+        var anims2 = this.anims.create({key: 'squidman2', frames: this.anims.generateFrameNames('p2', {prefix: 'character2Sprite', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
         var enemyAnims = this.anims.create({key: 'badman', frames: this.anims.generateFrameNames('enemy', {prefix: 'enemySprite', end: 2, zeroPad: 1}), repeat: -1, frameRate: 10});
        //Create the platforms and the player character set to collide with the platforms
        createPlatforms(this);
@@ -152,7 +154,7 @@
 
         this.physics.add.collider(player2, platforms);
         this.physics.add.collider(player2, layer);
-        player2.play(anims);
+        player2.play(anims2);
         player2.body.setSize(500, 500);
         this.physics.add.collider(player2, platforms);
         this.physics.add.overlap(player2, items, collectItem, null, this);
