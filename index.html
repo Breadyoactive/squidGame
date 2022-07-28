@@ -63,13 +63,13 @@
 
     function preload()
     {
-        this.load.image('bg', 'backround.png');
+        this.load.image('bg', 'Background2.png');
         this.load.image('platform', 'platform.png');
         this.load.image('clarinet', 'clarinet.png');
         this.load.image('sunglasses', 'sunglasses.png');
         this.load.image('squidmad', 'SquidwardOpen.png');
         this.load.image('squidcalm', 'SquidwardClosed.png');
-        this.load.image('finish', 'line.png');
+        this.load.image('finish', 'finish line.png');
         this.load.image('spike', 'spikes.png');
         this.load.image('bearTrap', 'bearTrap.png');
 
@@ -81,7 +81,7 @@
         this.load.atlas('p2', ' Char2SpriteSheet.png', 'Char2SpriteSheet.json');
 
         this.load.image('tileset', 'download.jpg');
-        this.load.tilemapTiledJSON('tilemap', 'map2ver2.json');
+        this.load.tilemapTiledJSON('tilemap', 'map2ver3.json');
     }
 
     function create()
@@ -103,36 +103,38 @@
        //Create the platforms and the player character set to collide with the platforms
        createPlatforms(this);
 
-       finishingLine = new FinishLine(this, 1800, 450);
-       finishingLine.scale = 1.1;
-       finishingLine.angle = 90;
+       finishingLine = new FinishLine(this, 1750, 450);
+       finishingLine.scale = 1.2;
+
 
 
         squids = this.physics.add.staticGroup();
-        squidmad = squids.create(game.scale.width-135, 360, 'squidmad');
-        squidcalm = squids.create(game.scale.width-135, 360, 'squidcalm');
+        squidmad = squids.create(game.scale.width-85, game.scale.height/2, 'squidmad');
+        squidmad.setScale(1.3);
+        squidcalm = squids.create(game.scale.width-85, game.scale.height/2, 'squidcalm');
+        squidcalm.setScale(1.3);
 
         lights = this.physics.add.staticGroup();
-        red = lights.create(game.scale.width-100,60, 'red');
-        red.setScale(0.25);
-        yellow = lights.create(game.scale.width-100,60, 'yellow');
-        yellow.setScale(0.25);
-        green = lights.create(game.scale.width-100,60, 'green');
-        green.setScale(0.25);
+        red = lights.create(100,100, 'red');
+        red.setScale(0.4);
+        yellow = lights.create(100,100, 'yellow');
+        yellow.setScale(0.4);
+        green = lights.create(100, 100, 'green');
+        green.setScale(0.4);
         player = new Player(this, 400, 400, 'test');
         player2 = new Player(this, 400, 800, 'yourmom');
-        enemy1 = new Enemy(this, 500, 800, 'hh');
-        enemy2 = new Enemy(this, 600, 800, 'hh');
-        enemy3 = new Enemy(this, 700, 800, 'hh');
+        enemy1 = new Enemy(this, 300, 400, 'hh');
+        enemy2 = new Enemy(this, 1250, 150, 'hh');
+        enemy3 = new Enemy(this, 1500, 500, 'hh');
         enemy1.play(enemyAnims);
         enemy1.body.setSize(250,250);
-        enemy1.addTween(this, enemy1.x +100, enemy1.y, 4000);
+        enemy1.addTween(this, enemy1.x , enemy1.y+200, 4000);
         enemy2.play(enemyAnims);
         enemy2.body.setSize(250,250);
-        enemy2.addTween(this, enemy2.x +100, enemy2.y, 4000);
+        enemy2.addTween(this, enemy2.x, enemy2.y+200, 4000);
         enemy3.play(enemyAnims);
         enemy3.body.setSize(250,250);
-        enemy3.addTween(this, enemy3.x +100, enemy3.y, 4000);
+        enemy3.addTween(this, enemy3.x, enemy3.y+500, 4000);
         enemies.push(enemy1);
         enemies.push(enemy2);
         enemies.push(enemy3);
@@ -143,7 +145,7 @@
        this.physics.add.collider(player, layer);
 
        player.play(anims);
-       player.body.setSize(500, 500);
+       player.body.setSize(400, 400);
        this.physics.add.collider(player, platforms);
        this.physics.add.overlap(player, items, collectItem, null, this);
        this.physics.add.overlap(player, obstacles, moveBack, null, this);
@@ -155,7 +157,7 @@
         this.physics.add.collider(player2, platforms);
         this.physics.add.collider(player2, layer);
         player2.play(anims2);
-        player2.body.setSize(500, 500);
+        player2.body.setSize(400, 400);
         this.physics.add.collider(player2, platforms);
         this.physics.add.overlap(player2, items, collectItem, null, this);
         this.physics.add.overlap(player2, obstacles, moveBack, null, this);
@@ -173,7 +175,7 @@
 
        graphics = this.add.graphics();
 
-        this.initialTime = 10000;
+        this.initialTime = 1500;
 
         text = this.add.text(32, 32, 'Countdown: ' + formatTime(this.initialTime / 1000));
 
@@ -458,7 +460,7 @@
 
             this.setCollideWorldBounds(false);
             this.setScale(0.4);
-            this.body.setSize(100, 100);
+            this.body.setSize(70, 70);
 
             this.setGravityY(0);
         }
