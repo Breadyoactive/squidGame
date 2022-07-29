@@ -34,6 +34,7 @@
     var game = new Phaser.Game(config);
 
     //Game Objects
+    var hasactuallywon = false;
     var platforms;
     var squids;
     var map;
@@ -68,7 +69,7 @@
 
 
     var inZone = false;
-    var gameEnd = false;
+    var gameEnd = true;
     var dead;
     var dead2;
     function preload()
@@ -76,6 +77,8 @@
         this.load.image('bg', 'Background2.png');
         this.load.image('splash', 'splashScreen.png');
         this.load.image('start', 'start-button.png');
+        this.load.image('startButton', 'start-button.png');
+        this.load.image('startScreen', 'titleScreen2.png');
 
         this.load.image('platform', 'platform.png');
         this.load.image('clarinet', 'clarinet.png');
@@ -106,6 +109,7 @@
     function create()
     {
         let background = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'bg').setOrigin(0, 0);
+        background.alpha = 0.7;
         //Set the background origin to be at (0, 0) or top left corner of the image rather than the center of the image asset
         map = this.make.tilemap({key: 'tilemap'});
         var tileset = map.addTilesetImage('tileset', 'tileset');
@@ -195,7 +199,7 @@
 
         //Set up user input
        cursors = this.input.keyboard.createCursorKeys();
-       keys = this.input.keyboard.addKeys('A, D, S, W');
+       keys = this.input.keyboard.addKeys('A, D, S, W , SPACE');
         let myItem = new Item(this,  1920/2, 1080/2 );
         items.push(myItem);
 
@@ -213,7 +217,7 @@
 
 
         for (i = 0; i < 50; i++){
-            let obs = new Obstacle(this,  Phaser.Math.Between(250, 1650), Phaser.Math.Between(0, 1500), obstacleTypes[Phaser.Math.Between(0, 1)]);
+            let obs = new Obstacle(this,  Phaser.Math.Between(250, 1650), Phaser.Math.Between(0, 1080), obstacleTypes[Phaser.Math.Between(0, 1)]);
             this.physics.add.collider(obs);
             obstacles.push(obs);
         }
@@ -229,10 +233,19 @@
         sunglasses2 = this.add.sprite(player.x,player.y, 'sunglasses');
         sunglasses2.setScale(0.07);
 
+        startScreen = this.add.sprite(1920/2,1080/2, 'startScreen');
+        startScreen.setScale(1);
+
+
         // var titleScreen = create image
         // set timeout ( titlescreen.destroy());
         let splash = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'splash').setOrigin(0, 0);
-        setTimeout(() => { splash.destroy() }, 5000);
+        setTimeout(() => { this.tweens.add({
+            targets: splash,
+            alpha: 0,
+            duration: 400,
+            ease: 'Power3'
+        }, this);}, 5000);
 
 
     }
@@ -276,6 +289,19 @@
     function update()
     {
         BeginUpdate();
+        if (keys.SPACE.isDown && hasactuallywon) {
+            window.location.reload();
+        }
+        if (keys.SPACE.isDown){
+            // startScreen.visible = false;
+            gameEnd = false;
+            this.tweens.add({
+                targets: startScreen,
+                alpha: 0,
+                duration: 400,
+                ease: 'Power3'
+            }, this);
+        }
 
         if (!gameEnd){
             clarinet1.setPosition(player.x + 15, player.y);
@@ -370,16 +396,16 @@
             if (secTime % 10 === 0)
             {
                 // console.log('oog2');
-                if (items.length < 50){
+                if (items.length < 30){
                     if (randNum < 500){
                         // console.log("off");
-                        let myItem = new Item(this,  Phaser.Math.Between(250, 1650), Phaser.Math.Between(0, 1500), 'clarinet');
+                        let myItem = new Item(this,  Phaser.Math.Between(250, 1650), Phaser.Math.Between(0, 1080), 'clarinet');
                         myItem.setScale(0.2);
                         this.physics.add.collider(myItem);
                         items.push(myItem);
                     }
                     else if (randNum < 1000){
-                        let myItem = new Item(this,  Phaser.Math.Between(250, 1650), Phaser.Math.Between(0, 1500), 'sunglasses');
+                        let myItem = new Item(this,  Phaser.Math.Between(250, 1650), Phaser.Math.Between(0, 1080), 'sunglasses');
                         this.physics.add.collider(myItem);
                         items.push(myItem);
                     }
@@ -675,13 +701,21 @@
     }
 
     function win(){
+        hasactuallywon = true;
         var anims = this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
         var anims2 = this.anims.create({key: 'squidman2', frames: this.anims.generateFrameNames('p2', {prefix: 'character2Sprite', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
 
         gameEnd = true;
         player.setPosition(0,0);
         player2.setPosition(0,0);
-        this.add.sprite(1920/2,1080/2,"playerOneWin");
+        winSprite = this.add.sprite(1920/2,1080/2,"playerOneWin");
+        winSprite.alpha = 0;
+        this.tweens.add({
+            targets: winSprite,
+            alpha: 1,
+            duration: 400,
+            ease: 'Power3'
+        }, this);
         endPlayer = new Player(this, 690, 450, 'test');
         endPlayer.play(anims);
         endPlayer.setScale(0.5);
@@ -691,14 +725,26 @@
         endPlayer.setScale(0.5);
         musics.stop();
         wins.play();
+        if (keys.SPACE.isDown) {
+            windows.location.reload();
+        }
     }
     function win2(){
+        hasactuallywon = true;
         var anims = this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
         var anims2 = this.anims.create({key: 'squidman2', frames: this.anims.generateFrameNames('p2', {prefix: 'character2Sprite', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
 
         gameEnd = true;
-        this.add.sprite(1920/2,1080/2,"playerTwoWin");
-
+        player.setPosition(0,0);
+        player2.setPosition(0,0);
+        winSprite = this.add.sprite(1920/2,1080/2,"playerTwoWin");
+        winSprite.alpha = 0;
+        this.tweens.add({
+            targets: winSprite,
+            alpha: 1,
+            duration: 400,
+            ease: 'Power3'
+        }, this);
         endPlayer = new Player(this, 690, 450, 'test');
         endPlayer.play(anims2);
         endPlayer.setScale(0.5);
@@ -708,7 +754,9 @@
         endPlayer.setScale(0.5);
         musics.stop();
         wins.play();
-
+        if (keys.SPACE.isDown) {
+            windows.location.reload();
+        }
     }
     function alive1() {
         player.setPosition(100,1080/2);
