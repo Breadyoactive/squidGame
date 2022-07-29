@@ -18,7 +18,7 @@
         physics: {
             default: 'arcade',
             arcade: {
-                debug: false,
+                debug: true,
                 gravity: { y: 0 }
             }
         },
@@ -61,12 +61,20 @@
     var freezePlayer = false;
     var freezePlayer2 = false;
 
+    var clarinet1;
+    var clarinet2;
+    var sunglasses1;
+    var sunglasses2;
+
+
     var inZone = false;
     var gameEnd = false;
 
     function preload()
     {
         this.load.image('bg', 'Background2.png');
+        this.load.image('start', 'start-button.png');
+
         this.load.image('platform', 'platform.png');
         this.load.image('clarinet', 'clarinet.png');
         this.load.image('sunglasses', 'sunglasses.png');
@@ -188,7 +196,7 @@
 
         this.initialTime = 1500;
 
-        text = this.add.text(32, 32, 'Countdown: ' + formatTime(this.initialTime / 1000));
+        // text = this.add.text(32, 32, 'Countdown: ' + formatTime(this.initialTime / 1000));
 
         // Each 1000 ms call onEvent
         timedEvent = this.time.addEvent({ delay: 1, callback: onEvent, callbackScope: this, loop: true });
@@ -200,7 +208,17 @@
             this.physics.add.collider(obs);
             obstacles.push(obs);
         }
+        clarinet1 = this.add.sprite(player.x,player.y, 'clarinet');
+        clarinet1.setScale(0.1);
+        sunglasses1 = this.add.sprite(player.x,player.y, 'sunglasses');
+        sunglasses1.setScale(0.07);
 
+
+        clarinet2 = this.add.sprite(player.x,player.y, 'clarinet');
+        clarinet2.setScale(0.1);
+
+        sunglasses2 = this.add.sprite(player.x,player.y, 'sunglasses');
+        sunglasses2.setScale(0.07);
     }
     function deleteItem(item, layer){
         item.disableBody(true, true);
@@ -222,7 +240,7 @@
     function onEvent ()
     {
         this.initialTime -= 1; // One second
-        text.setText('Countdown: ' + formatTime(this.initialTime));
+        // text.setText('Countdown: ' + formatTime(this.initialTime));
         // console.log(this.initialTime);
     }
 
@@ -243,6 +261,38 @@
         BeginUpdate();
 
         if (!gameEnd){
+            clarinet1.setPosition(player.x + 15, player.y);
+            sunglasses1.setPosition(player.x-4, player.y-15);
+
+            clarinet2.setPosition(player2.x + 15, player2.y);
+            sunglasses2.setPosition(player2.x-4, player2.y-15);
+
+            if (player.isSunglasses){
+                clarinet1.visible = false;
+                sunglasses1.visible = true;
+            }
+            else if (player.speed === 210){
+                clarinet1.visible = true;
+                sunglasses1.visible = false;
+            }
+            else{
+                clarinet1.visible = false;
+                sunglasses1.visible = false;
+            }
+
+            if (player2.isSunglasses){
+                clarinet2.visible = false;
+                sunglasses2.visible = true;
+            }
+            else if (player2.speed === 210){
+                clarinet2.visible = true;
+                sunglasses2.visible = false;
+            }
+            else{
+                clarinet2.visible = false;
+                sunglasses2.visible = false;
+            }
+
             if (inZone){
                 console.log('trues');
             }
@@ -271,7 +321,6 @@
             player2.setDragY(0.1);
             if (!freezePlayer2){
                 playerTwo();
-
             }
             // console.log(mad);
             // console.log(player2.isSunglasses);
@@ -302,6 +351,7 @@
                     if (randNum < 500){
                         // console.log("off");
                         let myItem = new Item(this,  Phaser.Math.Between(250, 1650), Phaser.Math.Between(0, 1500), 'clarinet');
+                        myItem.setScale(0.2);
                         this.physics.add.collider(myItem);
                         items.push(myItem);
                     }
@@ -358,6 +408,7 @@
 
     function die(mPlayer) {
         if (mPlayer === player){
+
             player.setPosition(50,400);
         }
         else if (mPlayer === player2){
@@ -434,7 +485,6 @@
         }
         else
         {
-
             p2ismovingy = false;
         }
 
@@ -550,13 +600,16 @@
             item.disableBody(true, true);
             for (i = 0; i < items.length; i++) {
                 if (items[i] === item) {
+
                     if (items[i].myItemType === 'clarinet') {
-                        player.speed = 250;
+
+                        player.speed = 210;
                         setTimeout(defaultPlayer, 3000, player);
                     } else if (items[i].myItemType === 'sunglasses') {
                         player.isSunglasses = true;
                         setTimeout(defaultPlayer, 5000, player);
                     }
+                    // selectedItem = this.add.sprite(player.positionX,player.positionY, items[i].myItemType);
                 }
             }
         }
@@ -589,16 +642,37 @@
     }
 
     function win(){
+        var anims = this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
+        var anims2 = this.anims.create({key: 'squidman2', frames: this.anims.generateFrameNames('p2', {prefix: 'character2Sprite', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
+
         gameEnd = true;
+        player.setPosition(0,0);
+        player2.setPosition(0,0);
         this.add.sprite(1920/2,1080/2,"playerOneWin");
-        endPlayer = new Player(this, 1920/2, 1080/2, 'test');
-        // player.setScale(5);
+        endPlayer = new Player(this, 690, 450, 'test');
+        endPlayer.play(anims);
+        endPlayer.setScale(0.5);
+
+        endPlayer = new Player(this, 1400, 650, 'test');
+        endPlayer.play(anims2);
+        endPlayer.setScale(0.5);
     }
     function win2(){
+        var anims = this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
+        var anims2 = this.anims.create({key: 'squidman2', frames: this.anims.generateFrameNames('p2', {prefix: 'character2Sprite', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
+
         gameEnd = true;
+        player.setPosition(0,0);
+        player2.setPosition(0,0);
         this.add.sprite(1920/2,1080/2,"playerTwoWin");
 
-        // player2.setScale(5);
+        endPlayer = new Player(this, 690, 450, 'test');
+        endPlayer.play(anims2);
+        endPlayer.setScale(0.5);
+
+        endPlayer = new Player(this, 1400, 650, 'test');
+        endPlayer.play(anims);
+        endPlayer.setScale(0.5);
 
     }
 
