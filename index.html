@@ -18,7 +18,7 @@
         physics: {
             default: 'arcade',
             arcade: {
-                debug: true,
+                debug: false,
                 gravity: { y: 0 }
             }
         },
@@ -74,6 +74,7 @@
     function preload()
     {
         this.load.image('bg', 'Background2.png');
+        this.load.image('splash', 'splashScreen.png');
         this.load.image('start', 'start-button.png');
 
         this.load.image('platform', 'platform.png');
@@ -104,8 +105,8 @@
 
     function create()
     {
+        let background = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'bg').setOrigin(0, 0);
         //Set the background origin to be at (0, 0) or top left corner of the image rather than the center of the image asset
-       let background = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'bg').setOrigin(0, 0);
         map = this.make.tilemap({key: 'tilemap'});
         var tileset = map.addTilesetImage('tileset', 'tileset');
         var layer = map.createStaticLayer("Tile Layer 1", tileset);
@@ -227,7 +228,15 @@
 
         sunglasses2 = this.add.sprite(player.x,player.y, 'sunglasses');
         sunglasses2.setScale(0.07);
+
+        // var titleScreen = create image
+        // set timeout ( titlescreen.destroy());
+        let splash = this.add.tileSprite(0, 0, game.scale.width, game.scale.height, 'splash').setOrigin(0, 0);
+        setTimeout(() => { splash.destroy() }, 5000);
+
+
     }
+
     function deleteItem(item, layer){
         item.disableBody(true, true);
         console.log(item);
@@ -684,6 +693,9 @@
         wins.play();
     }
     function win2(){
+        var anims = this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
+        var anims2 = this.anims.create({key: 'squidman2', frames: this.anims.generateFrameNames('p2', {prefix: 'character2Sprite', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
+
         gameEnd = true;
         this.add.sprite(1920/2,1080/2,"playerTwoWin");
 
@@ -708,6 +720,9 @@
         dead2.visible = false;
         player2.visible = true;
 
+    }
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     </script>
