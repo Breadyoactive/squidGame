@@ -18,7 +18,7 @@
         physics: {
             default: 'arcade',
             arcade: {
-                debug: true,
+                debug: false,
                 gravity: { y: 0 }
             }
         },
@@ -87,7 +87,7 @@
         this.load.atlas('p2', ' Char2SpriteSheet.png', 'Char2SpriteSheet.json');
 
         this.load.image('tileset', 'download.jpg');
-        this.load.tilemapTiledJSON('tilemap', 'map2ver2.json');
+        this.load.tilemapTiledJSON('tilemap', 'map2ver3.json');
     }
 
     function create()
@@ -128,7 +128,7 @@
         green = lights.create(100, 100, 'green');
         green.setScale(0.4);
         player = new Player(this, 50, 400, 'test');
-        player2 = new Player(this, 50, 800, 'yourmom');
+        player2 = new Player(this, 50, 500, 'yourmom');
         enemy1 = new Enemy(this, 300, 400, 'hh');
         enemy2 = new Enemy(this, 1250, 150, 'hh');
         enemy3 = new Enemy(this, 1500, 500, 'hh');
@@ -196,7 +196,7 @@
 
 
         for (i = 0; i < 50; i++){
-            let obs = new Obstacle(this,  Phaser.Math.Between(400, 2000), Phaser.Math.Between(0, 1500), obstacleTypes[Phaser.Math.Between(0, 1)]);
+            let obs = new Obstacle(this,  Phaser.Math.Between(250, 1650), Phaser.Math.Between(0, 1500), obstacleTypes[Phaser.Math.Between(0, 1)]);
             this.physics.add.collider(obs);
             obstacles.push(obs);
         }
@@ -289,7 +289,8 @@
 
                 // console.log("p2 died");
             }
-
+//i love brady
+          //zhe ge you xi gou shi
             // console.log('oog');
             var secTime = this.initialTime;
             var randNum = Phaser.Math.Between(0, 2000);
@@ -300,12 +301,12 @@
                 if (items.length < 50){
                     if (randNum < 500){
                         // console.log("off");
-                        let myItem = new Item(this,  Phaser.Math.Between(400, 2000), Phaser.Math.Between(0, 1500), 'clarinet');
+                        let myItem = new Item(this,  Phaser.Math.Between(250, 1650), Phaser.Math.Between(0, 1500), 'clarinet');
                         this.physics.add.collider(myItem);
                         items.push(myItem);
                     }
                     else if (randNum < 1000){
-                        let myItem = new Item(this,  Phaser.Math.Between(400, 2000), Phaser.Math.Between(0, 1500), 'sunglasses');
+                        let myItem = new Item(this,  Phaser.Math.Between(250, 1650), Phaser.Math.Between(0, 1500), 'sunglasses');
                         this.physics.add.collider(myItem);
                         items.push(myItem);
                     }
@@ -355,8 +356,14 @@
 
     }
 
-    function die(player) {
-        player.setPosition(100,1080/2);
+    function die(mPlayer) {
+        if (mPlayer === player){
+            player.setPosition(50,400);
+        }
+        else if (mPlayer === player2){
+            player2.setPosition(50,500);
+
+        }
     }
 
     function resetPlayerMode(){
