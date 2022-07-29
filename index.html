@@ -96,6 +96,9 @@
         this.load.atlas('p2', ' Char2SpriteSheet.png', 'Char2SpriteSheet.json');
         this.load.image('dead','deadCharacter.png');
         this.load.image('tileset', 'download.jpg');
+        this.load.audio("music", ["victorymusic2.mp3"]);
+        this.load.audio("win", ["victorymusic1.mp3"]);
+
         this.load.tilemapTiledJSON('tilemap', 'map2ver3.json');
     }
 
@@ -108,6 +111,9 @@
         var layer = map.createStaticLayer("Tile Layer 1", tileset);
 
         layer.setCollisionByExclusion([-1]);
+        musics = this.sound.add("music", { loop: true });
+        wins = this.sound.add("win", {loop: true});
+        musics.play();
 
 
         cursors = this.input.keyboard.createCursorKeys();
@@ -323,6 +329,7 @@
             player2.setDragY(0.1);
             if (!freezePlayer2){
                 playerTwo();
+
             }
             // console.log(mad);
             // console.log(player2.isSunglasses);
@@ -492,6 +499,7 @@
         }
         else
         {
+
             p2ismovingy = false;
         }
 
@@ -617,7 +625,6 @@
             item.disableBody(true, true);
             for (i = 0; i < items.length; i++) {
                 if (items[i] === item) {
-
                     if (items[i].myItemType === 'clarinet') {
 
                         player.speed = 210;
@@ -626,7 +633,6 @@
                         player.isSunglasses = true;
                         setTimeout(defaultPlayer, 5000, player);
                     }
-                    // selectedItem = this.add.sprite(player.positionX,player.positionY, items[i].myItemType);
                 }
             }
         }
@@ -674,14 +680,11 @@
         endPlayer = new Player(this, 1400, 650, 'test');
         endPlayer.play(anims2);
         endPlayer.setScale(0.5);
+        musics.stop();
+        wins.play();
     }
     function win2(){
-        var anims = this.anims.create({key: 'squidman', frames: this.anims.generateFrameNames('seacreatures', {prefix: 'player', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
-        var anims2 = this.anims.create({key: 'squidman2', frames: this.anims.generateFrameNames('p2', {prefix: 'character2Sprite', end: 1, zeroPad: 1}), repeat: -1, frameRate: 10});
-
         gameEnd = true;
-        player.setPosition(0,0);
-        player2.setPosition(0,0);
         this.add.sprite(1920/2,1080/2,"playerTwoWin");
 
         endPlayer = new Player(this, 690, 450, 'test');
@@ -691,6 +694,8 @@
         endPlayer = new Player(this, 1400, 650, 'test');
         endPlayer.play(anims);
         endPlayer.setScale(0.5);
+        musics.stop();
+        wins.play();
 
     }
     function alive1() {
